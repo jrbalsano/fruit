@@ -14,19 +14,15 @@ public class Fruit
 
     // recompile .class file?
     private static boolean recompile = true;
-    
-    // print more details?
-    private static boolean verbose = true;
+
+    // enable gui
+    private static boolean gui = true;
 
     // Step by step trace
     private static boolean trace = true;
 
-    // enable gui
-    private static boolean gui = false;
-
     // default parameters
     private static final String DEFAULT_PLAYERLIST = "players.list";
-    private static final String DEFAULT_DIST_PATH = "distribution.txt";
     private static int DEFAULT_BOWL_SIZE = 10;
 
 	// list files below a certain directory
@@ -104,7 +100,10 @@ public class Fruit
 
                 Player player = (Player) playerClass.newInstance();
                 // set player id
-                player.id = group.charAt(1) - '0';
+                if (Character.isDigit(group.charAt(1)))
+                    player.id = group.charAt(1) - '0';
+                else
+                    player.id = -1;
 
                 if (player == null)
                     throw new Exception("Load error");
@@ -119,16 +118,289 @@ public class Fruit
 		return playersList.toArray(new Player[0]);
 	}
 
+    private void roundToHtml(StringBuffer buf, int round) {
+		// array of results below buttons
+        buf.append("<div>");
 
-	// shuffle array
-	private static <T> void shuffle(T[] arr)
+        buf.append("<div style=\"width: 200px; height: 40px; text-align: center;font-size: 25px; font-weight: bold; font-family: 'Comic Sans MS', cursive, sans-serif\">" + "Round #" + round + "</div>\n");
+        
+		// empty up left square
+		buf.append("    <div style=\"width: 34px; height: 40px; float:left;\"></div>\n");
+
+		// color squares
+        for (int c = 0; c < FRUIT_NAMES.length; c++) {
+            String color = FRUIT_COLORS[c];
+            String cname = Character.toString((char)(65+c));
+			buf.append("<div style=\"width: 34px; height: 40px; font-size:20px; font-weight:bold;font-family:'Comic Sans MS', cursive, sans-serif;text-align:center;float:left; border: 1px solid black; background-color: " + color + "\">" + cname + "</div>\n");
+        }
+		// empty up right square
+		buf.append("    <div style=\"width: 34px; height: 40px; float:left;\"></div>\n");
+		buf.append("    <div style=\"clear:both;\"></div>\n");
+		// result lines
+		for (int p = 0 ; p != players.length ; ++p) {
+			// player name
+			buf.append("    <div style=\"width: 34px; height: 40px; float:left; border: 1px solid black; text-align: center;");
+            if (round == this.round && p == currentPlayer)
+                buf.append("background-color:green;"); // indicate current player is moving
+
+            buf.append("\n");
+			buf.append("                font-size: 20px; font-weight: bold; font-family: 'Comic Sans MS', cursive, sans-serif\">" + (p + 1) + "</div>\n");
+			int total = 0;
+
+			buf.append("    <div style=\"width: 432px; height: 40px; float: left; border: 1px solid black;\">\n");
+			for (int r = 0 ; r != FRUIT_NAMES.length ; ++r) {
+                String s;
+                if (bowlOfPlayer[round][p] == null)
+                    s = "-";
+                else {
+                    s = Integer.toString(bowlOfPlayer[round][p][r]);
+                    total += bowlOfPlayer[round][p][r] * preference[p][r];
+                }
+				buf.append("     <div style=\"width: 36px; height: 40px; float:left; text-align: center; font-size: 20px;\n");
+				buf.append("                 font-weight: bold; font-family: 'Comic Sans MS', cursive, sans-serif\">" + s + "</div>\n");
+
+			}
+			buf.append("    </div>\n");
+			// score
+            buf.append("    <div style=\"width: 36px; height: 40px; float:left; border: 1px solid black; text-align: center;\n");
+            buf.append("                font-size: 20px; font-weight: bold; font-family: 'Comic Sans MS', cursive, sans-serif\">" + total + "</div>\n");
+            buf.append("    <div style=\"clear:both;\"></div>\n");
+		}
+		// close result array
+		buf.append("   </div>\n");
+    }
+
+    private void preferenceToHtml(StringBuffer buf) {
+		// array of results below buttons
+        buf.append("<div>");
+
+        buf.append("<div style=\"width: 400px; height: 40px; text-align: center;font-size: 25px; font-weight: bold; font-family: 'Comic Sans MS', cursive, sans-serif\">" + "Player preference" + "</div>\n");
+
+
+		// empty up left square
+		buf.append("    <div style=\"width: 34px; height: 40px; float:left;\"></div>\n");
+		// color squares
+        for (int c = 0; c < FRUIT_NAMES.length; c++) {
+            String color = FRUIT_COLORS[c];
+            String cname = Character.toString((char)(65+c));
+			buf.append("<div style=\"width: 34px; height: 40px; font-size:20px; font-weight:bold;font-family:'Comic Sans MS', cursive, sans-serif;text-align:center;float:left; border: 1px solid black; background-color: " + color + "\">" + cname + "</div>\n");
+        }
+
+        buf.append("    <div style=\"clear:both;\"></div>\n");
+		// result lines
+		for (int p = 0 ; p != players.length ; ++p) {
+			// player name
+			buf.append("    <div style=\"width: 34px; height: 40px; float:left; border: 1px solid black; text-align: center;");
+            buf.append("\n");
+			buf.append("                font-size: 20px; font-weight: bold; font-family: 'Comic Sans MS', cursive, sans-serif\">" + players[p].id + "</div>\n");
+
+			buf.append("    <div style=\"width: 432px; height: 40px; float: left; border: 1px solid black;\">\n");
+			for (int r = 0 ; r != FRUIT_NAMES.length ; ++r) {
+				String s = Integer.toString(preference[p][r]);
+				buf.append("     <div style=\"width: 36px; height: 40px; float:left; text-align: center; font-size: 20px;\n");
+				buf.append("                 font-weight: bold; font-family: 'Comic Sans MS', cursive, sans-serif\">" + s + "</div>\n");
+			}
+
+			buf.append("    </div>\n");
+			// score
+            if (scores != null) {
+                buf.append("    <div style=\"width: 36px; height: 40px; float:left; border: 1px solid black; text-align: center;\n");
+                buf.append("                font-size: 20px; font-weight: bold; font-family: 'Comic Sans MS', cursive, sans-serif\">" + scores[p] + "</div>\n");
+                buf.append("    <div style=\"clear:both;\"></div>\n");
+            }
+            buf.append("   <div style=\"clear:both;\"></div>\n");
+		}
+		// close result array
+		buf.append("   </div>\n");
+    }
+
+    private void bowlToHtml(StringBuffer buf) {
+        buf.append("<div>");
+
+        // Text information about bowl id
+        buf.append("<div style=\"width: 200px; height: 40px; text-align: center;font-size: 25px; font-weight: bold; font-family: 'Comic Sans MS', cursive, sans-serif\">" + "Bowl #" + round + "," + bowlId + "</div>\n");
+
+		// empty up left square
+		buf.append("    <div style=\"width: 34px; height: 80px; float:left;\"></div>\n");
+
+        for (int c = 0; c < FRUIT_NAMES.length; c++) {
+            String color = FRUIT_COLORS[c];
+            String cname = Character.toString((char)(65+c));
+			buf.append("<div style=\"width: 34px; height: 40px; font-size:20px; font-weight:bold;font-family:'Comic Sans MS', cursive, sans-serif;text-align:center;float:left; border: 1px solid black; background-color: " + color + "\">" + cname + "</div>\n");
+        }
+
+        // initial distribution
+        buf.append("  <div style=\"width: 432px; height: 40px; float: left; border: 1px solid black;\">\n");
+        for (int r = 0 ; r != FRUIT_NAMES.length ; ++r) {
+            String s = "-";
+            if (currentBowl != null)
+                s = Integer.toString(currentBowl[r]); 
+            buf.append("     <div style=\"width: 36px; height: 40px; float:left; text-align: center; font-size: 20px;\n");
+            buf.append("                 font-weight: bold; font-family: 'Comic Sans MS', cursive, sans-serif\">" + s + "</div>\n");
+        }
+        buf.append(" </div>\n");
+        buf.append("    <div style=\"clear:both;\"></div>\n");
+
+        // Print player action
+        if (action != null)
+            buf.append("<div style=\"width: 400px; height: 40px; text-align: center;font-size: 25px; font-weight: bold; font-family: 'Comic Sans MS', cursive, sans-serif\">" + action + "</div>\n");
+
+        buf.append("</div>");
+    }
+
+
+    private void fruitDistToHtml(StringBuffer buf) {
+        //		buf.append("   <div style=\"width: 800px; float: left;\">\n");
+        buf.append("<div>");
+
+        buf.append("<div style=\"width: 500px; height: 40px; text-align: center;font-size: 25px; font-weight: bold; font-family: 'Comic Sans MS', cursive, sans-serif\">" + "Init and current distribution" + "</div>\n");
+
+		// empty up left square
+		buf.append("    <div style=\"width: 34px; height: 40px; float:left;\"></div>\n");
+
+		// color squares
+        for (int c = 0; c < FRUIT_NAMES.length; c++) {
+            String color = FRUIT_COLORS[c];
+            String cname = Character.toString((char)(65+c));
+			buf.append("<div style=\"width: 34px; height: 40px; font-size:20px; font-weight:bold;font-family:'Comic Sans MS', cursive, sans-serif;text-align:center;float:left; border: 1px solid black; background-color: " + color + "\">" + cname + "</div>\n");
+        }
+		buf.append("   <div style=\"clear:both;\"></div>\n");
+
+        // Init I
+        buf.append("    <div style=\"width: 34px; height: 40px; float:left; border: 1px solid black; text-align: center;");
+        buf.append("\n");
+        buf.append("                font-size: 25px; font-weight: bold; font-family: 'Comic Sans MS', cursive, sans-serif\">I</div>\n");
+        
+        // initial distribution
+        buf.append("  <div style=\"width: 432px; height: 40px; float: left; border: 1px solid black;\">\n");
+        for (int r = 0 ; r != FRUIT_NAMES.length ; ++r) {
+            String s = Integer.toString(fruitDist[r]); 
+            buf.append("     <div style=\"width: 36px; height: 40px; float:left; text-align: center; font-size: 20px;\n");
+            buf.append("                 font-weight: bold; font-family: 'Comic Sans MS', cursive, sans-serif\">" + s + "</div>\n");
+        }
+        buf.append(" </div>\n");
+        buf.append("    <div style=\"clear:both;\"></div>\n");
+
+        // Current C
+        buf.append("    <div style=\"width: 34px; height: 40px; float:left; border: 1px solid black; text-align: center;");
+        buf.append("\n");
+        buf.append("                font-size: 25px; font-weight: bold; font-family: 'Comic Sans MS', cursive, sans-serif\">C</div>\n");
+
+
+        // current distribution
+        buf.append("  <div style=\"width: 432px; height: 40px; float: left; border: 1px solid black;\">\n");
+        for (int r = 0 ; r != FRUIT_NAMES.length ; ++r) {
+            String s = "-";
+            if (currentFruits != null)
+                s = Integer.toString(currentFruits[r]); 
+            buf.append("     <div style=\"width: 36px; height: 40px; float:left; text-align: center; font-size: 20px;\n");
+            buf.append("                 font-weight: bold; font-family: 'Comic Sans MS', cursive, sans-serif\">" + s + "</div>\n");
+        }
+        buf.append("    </div>\n");
+        buf.append("    <div style=\"clear:both;\"></div>\n");
+        
+        buf.append("</div>");
+    }
+
+    private String state() {
+
+		int pixels = 1200;
+		String title = "Fruit";
+		StringBuffer buf = new StringBuffer("");
+		buf.append("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n");
+		buf.append("<html xmlns=\"http://www.w3.org/1999/xhtml\" dir=\"ltr\" lang=\"en-US\" xml:lang=\"en\">\n");
+		buf.append("<head>\n");
+		buf.append(" <meta http-equiv=\"Content-Type\" content=\"text/html; charset=iso-8859-7\" />\n");
+		buf.append(" <link rel=\"shortcut icon\" href=\"cell/icon.ico\" />\n");
+		buf.append(" <title>" + title + "</title>\n");
+		buf.append(" <style type=\"text/css\">\n");
+		buf.append("  a:link {text-decoration: none; color: blue;}\n");
+		buf.append("  a:visited {text-decoration: none; color: blue;}\n");
+		buf.append("  a:hover {text-decoration: none; color: red;}\n");
+		buf.append("  a:active {text-decoration: none; color: blue;}\n");
+		buf.append(" </style>\n");
+		buf.append("</head>\n");
+		buf.append("<body>\n");
+		// general part
+		buf.append(" <div style=\"width:" + pixels + "px; margin-left:auto; margin-right: auto;\">\n");
+		// left part
+		buf.append("  <div style=\"width: 550px; float: left;\">\n");
+        
+        // initial and current distribution
+        fruitDistToHtml(buf);
+
+		// space above
+		buf.append("   <div style=\"width: 550px; height: 50px;\"></div>\n");
+		buf.append("   <div style=\"clear:both;\"></div>\n");
+
+        // player preference
+        preferenceToHtml(buf);
+
+		// space above
+		buf.append("   <div style=\"width: 550px; height: 50px;\"></div>\n");
+		buf.append("   <div style=\"clear:both;\"></div>\n");
+		// space between buttons and array
+		buf.append("   <div style=\"width: 400px; height: 50px; float:left;\"></div>\n");
+		buf.append("   <div style=\"clear:both;\"></div>\n");
+		// button 1
+		buf.append("   <div style=\"width: 150px; height: 70px; float:left; cursor: pointer; text-align: center; font-size: 40px;\n");
+		buf.append("               font-weight: bold; font-family: 'Comic Sans MS', cursive, sans-serif\"><a href=\"play\">Play</a></div>\n");
+        //		buf.append("   <div style=\"clear:both;\"></div>\n");
+		// button 2
+		buf.append("   <div style=\"width: 150px; height: 70px; float:left; cursor: pointer; text-align: center; font-size: 40px;\n");
+		buf.append("               font-weight: bold; font-family: 'Comic Sans MS', cursive, sans-serif\"><a href=\"stop\">Stop</a></div>\n");
+        //		buf.append("   <div style=\"clear:both;\"></div>\n");
+		// button 3
+		buf.append("   <div style=\"width: 150px; height: 70px; float:left; cursor: pointer; text-align: center; font-size: 40px;\n");
+		buf.append("               font-weight: bold; font-family: 'Comic Sans MS', cursive, sans-serif\"><a href=\"step\">Step</a></div>\n");
+        //		buf.append("   <div style=\"clear:both;\"></div>\n");
+		// close left part of page
+		buf.append("  </div>\n");
+
+		// right part
+		buf.append("<div style=\"width: 600px; float: left;\">\n");
+
+        // show current bowl
+        bowlToHtml(buf);
+
+		// space above
+		buf.append("   <div style=\"width: 500px; height: 50px;\"></div>\n");
+		buf.append("   <div style=\"clear:both;\"></div>\n");
+
+        // show current round first
+        roundToHtml(buf, round);
+
+		// space above
+		buf.append("   <div style=\"width: 500px; height: 50px;\"></div>\n");
+		buf.append("   <div style=\"clear:both;\"></div>\n");
+        
+        // show the other round later
+        roundToHtml(buf, 1-round);
+        
+        buf.append("</div");
+
+        // close page
+		buf.append(" </div>\n");
+		buf.append("</body>\n");
+		buf.append("</html>\n");
+		return buf.toString();
+
+    }
+
+	// shuffle player
+	private static void shufflePlayer(Player[] arr)
 	{
 		for (int i = 0 ; i != arr.length ; ++i) {
 			int j = random.nextInt(arr.length - i) + i;
-			T t = arr[i];
+			Player t = arr[i];
 			arr[i] = arr[j];
 			arr[j] = t;
 		}
+        
+
+        // set index
+        for (int i = 0; i != arr.length; ++i)
+            arr[i].index = i;
 	}
 
 
@@ -195,17 +467,61 @@ public class Fruit
     }
 
 
-    private void play() {
+    private void play(boolean gui) throws Exception{
+        BufferedReader buffer = null;
+
+        HTTPServer server = null;
+		int refresh = 0;
+		char req = 'X';
+        if (gui) {
+			server = new HTTPServer();
+			int port = server.port();
+			System.err.println("Port: " + port);
+			while ((req = server.nextRequest(0)) == 'I');
+			if (req != 'B')
+				throw new Exception("Invalid first request");
+        }
+        else {
+            buffer = new BufferedReader(new InputStreamReader(System.in));
+        }
+
+		for (File f : directoryFiles(ROOT_DIR + "/sim/webpages", ".html"))
+			f.delete();
+		FileOutputStream out = new FileOutputStream(ROOT_DIR + "/sim/webpages/index.html");
+		out.write(state().getBytes());
+		out.close();
+
+        boolean f = true;
+        if (server != null) do {
+                if (!f) refresh = 0;
+                server.replyState(state(), refresh);
+                while ((req = server.nextRequest(0)) == 'I' || req == 'X');
+                if (req == 'S') refresh = 0;
+                else if (req == 'P') refresh = 1;
+                f = false;
+            } while (req == 'B');
+
+
+        int t = 0;
         for (int r = 0; r <= 1; r++) {
             System.err.println("###### ROUND " + r + " ######");
             resetRound(r);
-
             for (int i = 0; i < players.length; i++) {
+                bowlId = i;
+                System.err.println();
                 System.err.println("====== BOWL " + r + "." + i + " ======");
+
+                if (!gui && trace) {
+                    try {
+                        System.err.print("$");
+                        buffer.readLine();
+                    } catch (Exception e) {}
+                }
 
                 int[] bowl = createBowl();
                 System.err.println(Arrays.toString(bowl));
-
+                currentBowl = bowl;
+                
                 int [] range = new int[players.length];
                 if (r == 0) {
                     for (int k = 0; k < range.length; k++)
@@ -218,7 +534,10 @@ public class Fruit
                 
 
                 for (int k = 0; k < range.length; k++) {
+                    t++;
+
                     int j = range[k];
+                    currentPlayer = j;
 
                     boolean canPick = !hasBowl[j];
                     boolean mustTake = canPick && (choices[j] == 0); 
@@ -232,21 +551,51 @@ public class Fruit
                         if (take || mustTake) {
                             hasBowl[j] = true;
                             bowlOfPlayer[round][j] = bowl.clone();
-                            System.err.println("Player " + j + " takes bowl " + i);
-                            break; // break the loop
+                            action = "Player " + (j+1) + " TAKES bowl (" + round + "," + i + ")";
+                            System.err.println(action);
                         }
                         else {
-                            System.err.println("Player " + j + " passes bowl " + i);
+                            action = "Player " + (j+1) + " PASSES bowl (" + round + "," + i + ")";
+                            System.err.println(action);
                             choices[j]--;
                         }
+
+                        f = true;
+                        if (server != null) do {
+                            if (!f) refresh = 0;
+                            server.replyState(state(), refresh);
+                            while ((req = server.nextRequest(0)) == 'I' || req == 'X');
+                            if (req == 'S') refresh = 0;
+                            else if (req == 'P') refresh = 1;
+                            f = false;
+                        } while (req == 'B');
+                        // update the html file
+                        out = new FileOutputStream(ROOT_DIR + "/sim/webpages/" + t + ".html");
+                        out.write(state().getBytes());
+                        out.close();
+
+                        // break the loop
+                        if (take || mustTake)
+                            break;
                     }
+
                 }
             }        
         }
 
+
+
         computeScores();
         
         System.err.println(Arrays.toString(scores));
+
+        
+        // clean up the server
+		if (server != null) {
+			server.replyState(state(), 0);
+			while ((req = server.nextRequest(2000)) == 'I');
+            server.close();
+		}
     }
 
     private int[] computeScores()
@@ -274,6 +623,7 @@ public class Fruit
         System.err.println("Bowl size: " + bowlsize);
         System.err.println("Distribution:");
         System.err.println(Arrays.toString(fruitDist));
+        System.err.println();
     }
 
 
@@ -298,31 +648,39 @@ public class Fruit
     }
 
     // each round has a different fruit distribution and preference
-    public static void main(String[] args)
+    public static void main(String[] args) throws Exception
     {
         Random random = new Random();
         String playerPath = DEFAULT_PLAYERLIST;
         int bowlsize = DEFAULT_BOWL_SIZE;
+        String distgen = "fruit.sim.UniformFruitGenerator";
 
         // player list
         if (args.length > 0)
             playerPath = args[0];
+        // bowl size
         if (args.length > 1)
             bowlsize = Integer.parseInt(args[1]);
+        // distribution
+        if (args.length > 2)
+            distgen = args[2];
+        // enable gui?
+        if (args.length > 3)
+            gui = Boolean.parseBoolean(args[3]);
+        if (args.length > 4)
+            trace = Boolean.parseBoolean(args[4]);
 
         Player[] players = loadPlayers(playerPath);
-        shuffle(players);
-
-
-        // must be a multiple of bowlsize
-        int nfruits = bowlsize * players.length;
+        shufflePlayer(players);
 
         // read a fruit distribution
-        FruitGenerator fruitgen = new UniformFruitGenerator();
-        int[] dist = fruitgen.generate(nfruits);
+        FruitGenerator fruitgen = (FruitGenerator)Class.forName(distgen).newInstance();
+        //        FruitGenerator fruitgen = new fruit.dumb.FruitGenerator();
+
+        int[] dist = fruitgen.generate(players.length, bowlsize);
 
         Fruit game = new Fruit(players, bowlsize, dist);
-        game.play();
+        game.play(gui);
     }
 
     
@@ -349,6 +707,11 @@ public class Fruit
         "Elderberries", "Figs", "Grapes", "Honeydew",
         "Ilama", "Jackfruit", "Kiwi", "Lychee"};
 
+    private static String[] FRUIT_COLORS = {
+        "red", "yellow", "purple", "brown",
+        "crimson", "khaki", "darkred", "palegreen",
+        "yellowgreen", "greenyellow", "darkgreen", "indianred"};
+
     
     // all players
     private Player[] players;
@@ -363,10 +726,14 @@ public class Fruit
     // round number 0 or 1
     private int round = 0;
     private int bowlId = 0;
+    private int currentPlayer = -1;
     
     // current fruit
     private int[] currentFruits;
 
+    // current bowl
+    private int[] currentBowl;
+    
     // the preference of each player
     private int[][] preference;
     // number of choices of player
@@ -377,6 +744,8 @@ public class Fruit
     private int[][][] bowlOfPlayer;
 
     private int[] scores;
+
+    private String action;
 
     private static Random random = new Random();
 }

@@ -2,18 +2,13 @@ package fruit.sim;
 
 public abstract class Player
 {
-    static int globalIndex = 0;
     int id;
 
     // your position
-    public int index;
-
+    int index;
+    
     public int getIndex() {
         return index;
-    }
-    
-    public Player() {
-        index = globalIndex++;
     }
 
     // Override

@@ -4,7 +4,6 @@ import java.util.*;
 
 public class Player extends fruit.sim.Player
 {
-    
     public void init(int nplayers, int[] pref) {
         System.out.println("my index: " + getIndex());
         
