@@ -16,3 +16,6 @@ e.g.
 java fruit.sim.Fruit players.list 12 fruit.sim.UniformFruitGenerator true
 
 4. Implement your Player and FruitGenerator
+
+5. You can pull updates of the simulator from the following git repository
+https://jiachengy@bitbucket.org/jiachengy/fruit.git
