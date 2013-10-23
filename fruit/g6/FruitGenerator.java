@@ -1,9 +1,8 @@
 package fruit.g6;
 
-import fruit.sim.FruitGenerator;
 import java.util.Random;
 
-public class RandomFruitGenerator implements FruitGenerator
+public class FruitGenerator implements fruit.sim.FruitGenerator
 {
     public int[] generate(int nplayers, int bowlsize) {
         Random random = new Random();
