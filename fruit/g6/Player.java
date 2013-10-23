@@ -12,18 +12,39 @@ public class Player extends fruit.sim.Player {
   public boolean pass(int[] bowl, int bowlId, int round,
                       boolean canPick,
                       boolean musTake) {
+   if (musTake || !canPick) {
+     generateDistribution(newBowl);
+     return true;
+   }
    
+   boolean take = getExpectedScore() <= getBowlScore(bowl);
+   generateDistribution(newBowl);
+   return take;
+  }
+
+  
+  private int getExpectedScore() {
+    int expected = 0;
+    for (int i = 0; i < NFRUIT; i++) {
+      expected += mExpDistrib[i] * mPreferences[i];
+    }
+    return expected;
   }
   
-  private getBowlScore(int[] bowl) {
-    
+  /* Returns score of current bowl */
+  private int getBowlScore(int[] bowl) {
+    int score = 0;
+    for (int i = 0; i < NFRUIT; i++) {
+      score += bowl[i] * mPreferences[i];
+    }
+    return score;
   }
   
   /**
    * Average the newBowl with the current expected distribution
    * @param newBowl
    */
-  private generateDistribution(int[] newBowl) {
+  private void generateDistribution(int[] newBowl) {
     
   }
   
