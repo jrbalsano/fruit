@@ -13,7 +13,7 @@ public class Fruit
     private static String ROOT_DIR = "fruit";
 
     // recompile .class file?
-    private static boolean recompile = true;
+    private static boolean recompile = false;
 
     // enable gui
     private static boolean gui = true;
@@ -69,6 +69,7 @@ public class Fruit
             String sep = File.separator;
             // load players
             String group;
+            int pid = 0;
             while ((group = in.readLine()) != null) {
                 System.err.println("Group: " + group);
                 // search for compiled files
@@ -102,10 +103,13 @@ public class Fruit
 
                 Player player = (Player) playerClass.newInstance();
                 // set player id
-                if (Character.isDigit(group.charAt(1)))
-                    player.id = group.charAt(1) - '0';
-                else
-                    player.id = -1;
+                player.id = pid;
+                player.name = group;
+                pid++;
+                // if (Character.isDigit(group.charAt(1)))
+                //     player.id = group.charAt(1) - '0';
+                // else
+                //     player.id = -1;
 
                 if (player == null)
                     throw new Exception("Load error");
@@ -146,7 +150,7 @@ public class Fruit
                 buf.append("background-color:green;"); // indicate current player is moving
 
             buf.append("\n");
-			buf.append("                font-size: 20px; font-weight: bold; font-family: 'Comic Sans MS', cursive, sans-serif\">" + (p + 1) + "</div>\n");
+			buf.append("                font-size: 20px; font-weight: bold; font-family: 'Comic Sans MS', cursive, sans-serif\">" + players[p].name + "</div>\n");
 			int total = 0;
 
 			buf.append("    <div style=\"width: 432px; height: 40px; float: left; border: 1px solid black;\">\n");
@@ -194,7 +198,7 @@ public class Fruit
 			// player name
 			buf.append("    <div style=\"width: 34px; height: 40px; float:left; border: 1px solid black; text-align: center;");
             buf.append("\n");
-			buf.append("                font-size: 20px; font-weight: bold; font-family: 'Comic Sans MS', cursive, sans-serif\">" + players[p].id + "</div>\n");
+			buf.append("                font-size: 20px; font-weight: bold; font-family: 'Comic Sans MS', cursive, sans-serif\">" + players[p].name + "</div>\n");
 
 			buf.append("    <div style=\"width: 432px; height: 40px; float: left; border: 1px solid black;\">\n");
 			for (int r = 0 ; r != FRUIT_NAMES.length ; ++r) {
@@ -207,7 +211,7 @@ public class Fruit
             // expectation
             buf.append("    <div style=\"width: 36px; height: 40px; float:left; border: 1px solid black; text-align: center;\n");
             buf.append("                font-size: 20px; font-weight: bold; font-family: 'Comic Sans MS', cursive, sans-serif\">" + expectation[p] + "</div>\n");
-            buf.append("    <div style=\"clear:both;\"></div>\n");
+            //            buf.append("    <div style=\"clear:both;\"></div>\n");
 
 			// score
             if (scores != null) {
@@ -695,7 +699,7 @@ public class Fruit
         }
 
         if (dist[10] > 1)
-            throw new Exception("Distribution does not sum to 1!");
+            throw new Exception("Distribution does not sum to 1!" + dist[10]);
         dist[11] = 1; // the last is always 1
 
         for (int i = 0; i < nfruits; ++i) {
@@ -721,13 +725,30 @@ public class Fruit
         return bowl;
     }
 
+    static String[] loadPlayerNames(String txtPath) {
+        ArrayList<String> namelist = new ArrayList<String>();
+        try {
+            // get file of players
+            BufferedReader in = new BufferedReader(new FileReader(new File(txtPath)));
+            String line;
+            while ( (line = in.readLine()) != null)
+                if (line.trim() != "")
+                    namelist.add(line);
+        } catch (Exception e) {
+            e.printStackTrace();        
+            System.exit(1);
+        }
+        return namelist.toArray(new String[0]);
+    }
+
+
     // each round has a different fruit distribution and preference
     public static void main(String[] args) throws Exception
     {
-        Random random = new Random();
         String playerPath = DEFAULT_PLAYERLIST;
         int bowlsize = DEFAULT_BOWL_SIZE;
         String distPath = DEFAULT_DISTRIBUTION;
+        int repeats = 1;
 
         // player list
         if (args.length > 0)
@@ -741,20 +762,41 @@ public class Fruit
         // enable gui?
         if (args.length > 3)
             gui = Boolean.parseBoolean(args[3]);
+        // trace
         if (args.length > 4)
             trace = Boolean.parseBoolean(args[4]);
+        // repeats
+        if (args.length > 5)
+            repeats = Integer.parseInt(args[5]);
+        
+        String[] playerNames = loadPlayerNames(playerPath);
+        int totalScores[] = new int[playerNames.length];
 
-        Player[] players = loadPlayers(playerPath);
-        shufflePlayer(players);
+        for (int r = 0; r < repeats; ++r) {
+            Player[] players = loadPlayers(playerPath);
+            shufflePlayer(players);
 
-        // read a fruit distribution
-        //        FruitGenerator fruitgen = (FruitGenerator)Class.forName(distgen).newInstance();
-        //        FruitGenerator fruitgen = new fruit.dumb.FruitGenerator();
+            // read a fruit distribution
+            //        FruitGenerator fruitgen = (FruitGenerator)Class.forName(distgen).newInstance();
+            //        FruitGenerator fruitgen = new fruit.dumb.FruitGenerator();
 
-        int[] dist = createServingBowl(distPath, bowlsize * players.length);
+            int[] dist = createServingBowl(distPath, bowlsize * players.length);
 
-        Fruit game = new Fruit(players, bowlsize, dist);
-        game.play(gui);
+            Fruit game = new Fruit(players, bowlsize, dist);
+            game.play(gui);
+            
+            for (int p = 0; p < players.length; ++p) {
+                totalScores[players[p].id] += game.scores[p];
+            }
+        }
+
+
+        // print aggregate score
+        System.err.println("###### Tournament result ######");
+        for (int p = 0; p < playerNames.length; ++p) {
+            System.err.println(playerNames[p] + ":" + 1.0 * totalScores[p] / repeats);
+        }
+        
     }
 
     

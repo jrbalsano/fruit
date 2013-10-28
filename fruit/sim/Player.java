@@ -4,6 +4,7 @@ public abstract class Player
 {
     // group id, e.g. 1, 2, 3...
     int id;
+    String name;
 
     // your position in the game
     // the simulator will set your position before
