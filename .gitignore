@@ -1,3 +1,5 @@
 *.class
 *.html
 players.list
+.DS_Store
+g6.zip
