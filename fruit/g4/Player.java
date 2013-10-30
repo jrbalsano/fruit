@@ -62,8 +62,7 @@ public class Player extends fruit.sim.Player
     if (currentScore < mle) return false;
 
     float diff = maxScore() - mle;
-    // TODO: base off of nplayers as well
-    return currentScore > (0.5f * diff * ((totalNumBowls - 1) / bowlsRemaining)) + mle;
+    return currentScore > (0.3f * diff * (numPlayers / 9.0f * (totalNumBowls - 1) / bowlsRemaining)) + mle;
   }
 
   private float maxScore(){

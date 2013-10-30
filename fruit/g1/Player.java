@@ -7,33 +7,23 @@ public class Player extends fruit.sim.Player
 
     private Random random = new Random();
     
-    private int nplayers;
-    private int bowlsize; 
+    private int nplayers, bowlsize; 
     private int[] preferences;
-    private int[] uniform_platter;
     
     private int[] est_platter;
-    
-    private int[] r0_seen_fruit;
-    private int[] r1_seen_fruit;
+    private int[] r0_seen_fruit, r1_seen_fruit;
     private int[] bowls_seen; 
     
-    private double[] fruit_probs;
-    private double[] r0_probs, r1_probs;
+    private double[] fruit_probs, r0_probs;
 
     private final int NUM_FRUITS = 12;
-    private final int FIRST = 0;
-    private final int SECOND = 1;
+    private final int FIRST = 0, SECOND = 1;
     
-    public void init(int nplayers, int[] pref) {
-	
-		// here's a comment!
-	
+    public void init(int nplayers, int[] pref) {	
         this.nplayers = nplayers;
         preferences = pref.clone();
         r0_seen_fruit = new int[preferences.length];
         r1_seen_fruit = new int[preferences.length];
-        uniform_platter = new int[preferences.length];
         est_platter = new int[preferences.length];
         fruit_probs = new double[preferences.length];
         r0_probs = new double[preferences.length];
@@ -55,36 +45,18 @@ public class Player extends fruit.sim.Player
                 r1_seen_fruit[i] += bowl[i];
             }
         }
-
-        // we try to infer the current platter using the information that we have
-        
-        // first we generate a platter
-        // for now uniform, must improve on this
-        int total_fruit = bowlsize*nplayers;
-        for (int i=0; i < uniform_platter.length; i++) {
-            uniform_platter[i] = Math.round(total_fruit/uniform_platter.length);
-        }
-        
         
         
         // recompute the probabilities of each fruit in a 
         // full platter based on what we've seen so far
+        // if first round, reset probabilites to uniform,
+        // else use probabilities from end of first round
+        if (round == FIRST) java.util.Arrays.fill(fruit_probs, 1.0 / NUM_FRUITS);
+        else fruit_probs = r0_probs.clone();
+        
         
         // start with a constant increment value for now, need to find a way to
         // compute this mathematically
-        
-        
-        // if first round, reset probabilites to uniform,
-        // else use probabilities from end of first round
-        if (round == FIRST) {
-            java.util.Arrays.fill(fruit_probs, 1.0 / NUM_FRUITS);
-        }
-        else {
-            fruit_probs = r0_probs.clone();
-        }
-        
-        
-        
         double inc = 1.0; // should be a function of the number of players
         double prob_sum = 0.0;
         double scale = bowlsize * bowls_seen[round];
@@ -100,6 +72,7 @@ public class Player extends fruit.sim.Player
         if (round == FIRST) r0_probs = fruit_probs.clone();
         
         // generate a platter based on estimated probabilties of each fruit
+        int total_fruit = bowlsize*nplayers;
         for (int i=0; i < est_platter.length; i++) {
             est_platter[i] = (int) Math.round(total_fruit * fruit_probs[i]);
         }
@@ -118,8 +91,11 @@ public class Player extends fruit.sim.Player
         }
         else {
             //int ev = calculateExpectedValue(uniform_platter);
-            int ev = calculateExpectedValue(est_platter);
+            int[] ev_max = calculateExpectedAndMaxValue(est_platter);
+            int ev = ev_max[0];
+            int max_score = ev_max[1];
             System.out.println("EV = " + ev + "\n");
+            System.out.println("MAX = " + max_score + "\n");
             
             // compute the score of the bowl we received
             int score = scoreBowl(bowl);
@@ -132,11 +108,13 @@ public class Player extends fruit.sim.Player
             // EDIT: Using our new estimation tactic, this strategy is now very strict
             // and out player passes on almost every bowl, needs refining
             
-            double lin_range = 0.66; // why this value?
+            double lin_range = 0.5; // why this value?
             int bowls_ill_see = nplayers - getIndex();
-            int max_score = 12*bowlsize;
-            double seg = (max_score-ev)*lin_range/bowls_ill_see;
-            return score > (ev + seg*(bowls_ill_see - bowls_seen[round] -1));
+            //int max_score = 12*bowlsize;
+            double seg = (max_score - ev)*lin_range/bowls_ill_see;
+            int bowls_left = bowls_ill_see - bowls_seen[round] - 1;
+            System.out.println("bowls left: " + bowls_left);
+            return score > (ev + seg * bowls_left);
         }        
     }
 
@@ -174,14 +152,18 @@ public class Player extends fruit.sim.Player
     // GIVEN A PLATTER EMULATING THE DISTRIBUTION OF THE SERVING BOWL
     // IT WILL CALCULATE THE EMPIRICAL EXPECTED VALUE ACCOUNTING FOR
     // CLUSTERING AND SERVING IN THE SAME MANNER AS THE SIMULATOR
-    private int calculateExpectedValue(int[] platter) {
+    private int[] calculateExpectedAndMaxValue(int[] platter) {
         int[] bowl;
         int total_score = 0;
+        int max_score = -1;
         for (int i=0; i < 10000; i++) {
             bowl = createBowl(platter);
-            total_score += scoreBowl(bowl);
+            int bowl_score = scoreBowl(bowl);
+            total_score += bowl_score;
+            if (bowl_score > max_score) max_score = bowl_score;
         }
-        return Math.round(total_score/10000);
+        int[] return_val = {Math.round(total_score/10000), max_score};
+        return return_val;
     }
 
     // GENERATES A BOWL IN THE SAME FASHION THAT THE SIMULATOR DOES

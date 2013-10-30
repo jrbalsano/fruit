@@ -1,33 +1,51 @@
-package fruit.g6;
+package fruit.g6new;
 
 import java.util.Arrays;
 
 public class Player extends fruit.sim.Player {
+  //Book-keeping
   public final int NFRUIT = 12;
   int nplayers;
-  double[] mExpDistrib = new double[NFRUIT];
+  int bowlSize;
   int[] mPreferences = new int[NFRUIT];
-  boolean replaceInitialDistribution=false;
+  double[] mExpDistrib = new double[NFRUIT];
+  
+  //State & property keepers
   boolean firstInvocation;
   int timesCanPass;
   int timesCanPassInitial;
-  int bowlSize;
   int passNumber;
+  int stoppingThreshold;
+  double deviationThreshold;
+  
+  //Parameter tuning
+  boolean replaceInitialDistribution=false;
+  boolean useStopping=true;
   boolean debug=true;
+  boolean useLogisticFunctionDeviationFraction=true;
+  boolean laterBowlMoreImp=true; //still not using this
+  boolean takeReallyGoodBowl=true;
   
   public void init(int nplayers, int[] pref) {
 	  this.nplayers=nplayers;
 	  mPreferences=pref;
 	  Arrays.fill(mExpDistrib, 1.0/NFRUIT);
-	  roundInit();
+	  roundInit(0);
   }
   
-  public void roundInit()
+  public void roundInit(int round)
   {
+	  if(debug)
+		  print("Custom Initializing...");
 	  firstInvocation=true;
 	  passNumber=1;
 	  timesCanPass=nplayers-1-getIndex();
+	  if(round==1)
+	  {
+		  timesCanPass=nplayers-timesCanPass-1;
+	  }
 	  timesCanPassInitial=timesCanPass;
+	  stoppingThreshold=(int)Math.floor(timesCanPass/Math.E);
   }
 
   public boolean pass(int[] bowl, int bowlId, int round,
@@ -37,8 +55,8 @@ public class Player extends fruit.sim.Player {
    bowlSize=sumOfArray(bowl);
 	  
    if (musTake || !canPick) {
-     generateDistribution(bowl);
-     roundInit();
+     modifyDistribution(bowl);
+     roundInit(1);
      return true;
    }
    
@@ -46,21 +64,41 @@ public class Player extends fruit.sim.Player {
    double bowlScore=getBowlScore(bowl);
    double deviation=getDeviation();
    
-   if(debug)
+   
+   
+   double meanPlus;
+   if(useLogisticFunctionDeviationFraction) //Chop off using logistic function 
    {
-	   print(String.format("timesCanPass %d timesCanPassInitial %d expected %f deviation %f", timesCanPass, timesCanPassInitial, expectedScore, deviation));
-	   print(String.format("expected=%f // bowlscore=%f ", (expectedScore+deviation*timesCanPass/(timesCanPassInitial-1)), bowlScore));
+	   meanPlus=calculateDeviationThreshold()*scaledSigmoid(timesCanPass*1.0/timesCanPassInitial);
+   }
+   else //Linearly chop off
+   {
+	   meanPlus=deviation*timesCanPass/(timesCanPassInitial-1);
    }
    
-   boolean take = ((expectedScore+deviation*timesCanPass/(timesCanPassInitial-1)) <= bowlScore);
-   generateDistribution(bowl);
+   if(debug)
+   {
+	   print(String.format("timesCanPass %d timesCanPassInitial %d expected %f deviation %f deviationfraction %f", timesCanPass, timesCanPassInitial, expectedScore, deviation,calculateDeviationThreshold()));
+	   print(String.format("Old expected=%f // bowlscore=%f ", (expectedScore+deviation*timesCanPass/(timesCanPassInitial-1)), bowlScore));
+	   print(String.format("New expected=%f // bowlscore=%f ", (expectedScore+calculateDeviationThreshold()*scaledSigmoid(1.0*timesCanPass/timesCanPassInitial)), bowlScore));
+	   print(String.format("stoppingthreshold=%d // passnumber=%d ", stoppingThreshold, passNumber));
+   }
    
-   passNumber++;
+   boolean take = ((expectedScore+meanPlus) <= bowlScore || (takeReallyGoodBowl && bowlScore>=9*NFRUIT));
+   modifyDistribution(bowl);
+   
+   
+   if(useStopping && passNumber<=stoppingThreshold)
+   {
+	   take=false;
+   }
    
    if(!take)
-	   timesCanPass--;
+ 	  timesCanPass--;
    else
-	   roundInit();
+ 	  roundInit(1);
+   
+   passNumber++;
    return take;
   }
 
@@ -100,7 +138,7 @@ public class Player extends fruit.sim.Player {
    * Average the newBowl with the current expected distribution
    * @param newBowl
    */
-  private void generateDistribution(int[] newBowl) {
+  private void modifyDistribution(int[] newBowl) {
 	  if(firstInvocation)
 	  {
 		  firstInvocation=false;
@@ -115,8 +153,6 @@ public class Player extends fruit.sim.Player {
 		  mExpDistrib[i]=(mExpDistrib[i]*mExpDistrib.length*passNumber + newBowl[i]);
 		  mExpDistrib[i]/=1.0*(mExpDistrib.length*passNumber+sumOfArray(newBowl));
 	  }
-	  
-	  
   }
   
   /*
@@ -149,4 +185,18 @@ public class Player extends fruit.sim.Player {
   {
 	  System.out.println(s);
   }
+  
+  public double calculateDeviationThreshold()
+  {
+	 return getDeviation() * scaledSigmoid( 1.0*timesCanPass/ (nplayers-1) );
+  }
+  
+  
+  /* *
+   * Sigmoid function that takes in value from 0 to 1, and outputs values from 0 to 1 
+   * */
+  public double scaledSigmoid(double x)
+	{
+		return 1/(1+Math.pow(Math.E,6-x*12));
+	}
 }

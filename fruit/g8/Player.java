@@ -1,4 +1,4 @@
-package fruit.g8;
+package fruit.g8new;
 
 import java.util.*;
 
@@ -15,63 +15,125 @@ public class Player extends fruit.sim.Player
     	this.pref=pref;
     	this.position=this.getIndex();// position start from 0
     	this.record = new int[2*nplayer];
-        if(nplayers-position<=9)
-        	magic=magic_table[nplayers];
+    	if(nplayers-position<=9)
+        	magic=magic_table[nplayers-position];
         else
         	magic=(int) Math.round(0.369*(nplayers-position) );
-        
     }
     int max=0;
     int counter=0;
+    int bowSize=0;
     public boolean pass(int[] bowl, int bowlId, int round,
                         boolean canPick,
                         boolean musTake) {
     	counter++;
-    	System.out.printf("\n counter is %d\n", counter);
-    	record[counter-1]=score(bowl);
+    	if(counter==1){
+    		for(int i=0;i<12;i++){
+        		bowSize+=bowl[i];
+        	}
+    		//update(bowSize*6);
+    	}
+    	//System.out.printf("\n counter is %d\n", counter);
+    	//record[counter-1]=score(bowl);
+    	update(score(bowl));
     	
     	if (musTake){
 			return true;
 		}
-    	if (round==0) {
-            return round0(bowl,bowlId,round,canPick,musTake);
-        } else {
-            return round1(bowl,bowlId,round,canPick,musTake);
-        }
     	
-    }
-    
-	private boolean round0(int[] bowl, int bowlId, int round,
-            boolean canPick,
-            boolean musTake) {
-    	//System.out.printf("magic is %d", magic);
-        if(counter<=magic){
-        	System.out.println("we won't pick the bowl");
-        	System.out.printf("the counter is %d\n", counter);
-        	if (counter>2){
-        		System.out.println("we are in counter>>2");
-        		boolean grab=pickduringobservation(bowl, record);
-        		if (grab)
-        			return true;
-       }
-        	if (max<score(bowl)){
-        		max=score(bowl);
-        	}
-        }else{
-        	//System.out.println("we are in the picking round");
-        	if(score(bowl)>=max){
-        		return true;
-        	}else{
-        		return false;
-        	}
-        }
-        return false;
-	}
-	
-	private boolean round1(int[] bowl, int bowlId, int round, boolean canPick,
-				boolean musTake) {
+    	//no enough information
+    	if (info.size()<=1) {
 			return false;
 		}
+    	
+    	int futureBowls=0;
+    	if (round==0) {
+    		futureBowls=nplayer-position-counter;
+            //return round0(bowl,bowlId,round,canPick,musTake);
+        } else {
+        	futureBowls=position+1-counter;
+            //return round1(bowl,bowlId,round,canPick,musTake);
+        }
+    	double b=score(bowl);
+    	double PrB=1, p=probLessThan(b);
+    	for (int i = 0; i < futureBowls; i++) {
+			PrB*=p;
+		}
+    	double PrA=1-PrB;
+    	double ExA=exptGreaterThan(b);
+    	double ExB=exptLessThan(b);
+    	double Ex2=PrA*ExA+PrB*ExB;
+    	if(Ex2>b) { //
+    		return false;
+    	}
+    	else {
+			return true;
+		}
+    }
+    private double exptLessThan(double b) {
+    	double sum=0,interval=(b-12)/10000,val=12;
+		for (int i = 0; i <10000; i++) {
+			sum+=phi(val, mu, sigma)*val*interval;
+			val+=interval;
+		}
+		return sum/probLessThan(b);
+	}
+	private double exptGreaterThan(double b) {
+		double sum=0,interval=(bowSize*12-b)/10000,val=b;
+		for (int i = 0; i <10000; i++) {
+			sum+=phi(val, mu, sigma)*val*interval;
+			val+=interval;
+		}
+		return sum/(1-probLessThan(b));
+	}
+	private double probLessThan(double b) {
+		if (sigma<1e-8) {
+			if (b>mu) {
+				return 1;
+			}else {
+				return 0;
+			}
+		}
+		return Phi((b - mu) / sigma);
+	}
+    
+    public static double Phi(double z) {
+        if (z < -8.0) return 0.0;
+        if (z >  8.0) return 1.0;
+        double sum = 0.0, term = z;
+        for (int i = 3; sum + term != sum; i += 2) {
+            sum  = sum + term;
+            term = term * z * z / i;
+        }
+        return 0.5 + sum * phi(z);
+    }
+    
+    // return phi(x) = standard Gaussian pdf
+    public static double phi(double x) {
+        return Math.exp(-x*x / 2) / Math.sqrt(2 * Math.PI);
+    }
+    public static double phi(double x, double mu, double sigma) {
+        return phi((x - mu) / sigma) / sigma;
+    }
+    
+	ArrayList<Integer> info=new ArrayList<Integer>();
+    double mu,sigma;
+	private void update(int x) {
+		info.add(x);
+		mu=0;
+		for(Integer y:info){
+			mu+=y;
+		}
+		mu=mu/info.size();
+		sigma=0;
+		for(Integer y:info){
+			sigma+=(y-mu)*(y-mu);
+		}
+		sigma/=info.size();
+		sigma=Math.sqrt(sigma);
+	}
+
+
 
 	private int score(int[] bowl){
     	int sum=0;

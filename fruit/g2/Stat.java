@@ -1,9 +1,11 @@
 package fruit.g2;
 
 import java.util.*;
+import java.io.*;
 
 public class Stat {
     private LinkedList<int[]> history;
+    private LinkedList<Integer> scoreHistory;
     private int nplayers;
     private int nkindfruits;
     private int nfruits;
@@ -12,6 +14,7 @@ public class Stat {
     
     public Stat(int nplayers, int[] pref) {
         history = new LinkedList<int[]>();
+        scoreHistory = new LinkedList<Integer>();
         this.nplayers = nplayers;
         this.pref = pref.clone();
         nkindfruits = pref.length;
@@ -20,7 +23,7 @@ public class Stat {
     }
 
     public int getNFruits(){
-	return nfruits;
+        return nfruits;
     }
 
     public void add(int[] bowl) {
@@ -30,14 +33,14 @@ public class Stat {
         assert(nfruits == sum(bowl));
         nround++;
         history.add(bowl);
+        scoreHistory.add(dot(bowl, pref));
         assert(nround == history.size());
     }
 
     public int score(int round) {
         assert(round < nround);
         assert(round >= 0);
-        int[] bowl = history.get(round);
-        return dot(pref, bowl);
+        return scoreHistory.get(round);
     }
 
     public double average() {
@@ -52,6 +55,8 @@ public class Stat {
 
 
     public double stdev() {
+        if (nround == 0)
+            return nfruits;
         double avg = average();
         int sum = 0;
         for (int i = 0; i < nround; i++) {
@@ -60,6 +65,37 @@ public class Stat {
         }
         return Math.pow((sum/nround), 0.5);
 
+    }
+
+    public void dump(String filename) {
+        LinkedList<Integer> scores = new LinkedList<Integer>(scoreHistory);
+        int size = scores.size();
+        double avg = average();
+        double std = stdev();
+        Collections.sort(scores, Collections.reverseOrder());
+        try {
+            PrintWriter writer = new PrintWriter(filename+".txt");
+            for (int i = 1; i < 100; i++) {
+                // rank top 1/i
+                int rank = (int)(size / i - 1);
+                if (rank < 0)
+                    rank = 0;
+                double score = scores.get(rank);
+                double coeff = (score - avg) / std;
+                writer.println(coeff);
+            }
+            writer.flush();
+            writer.close();
+            writer = new PrintWriter(filename+"_raw.txt");
+            for (int i = 1; i < nround; i++) {
+                writer.println(scores.get(i));
+            }
+            writer.flush();
+            writer.close();
+        }
+        catch (Exception e) {
+            System.err.println(e.toString());
+        }
     }
 
     private int sum(int[] a) {
