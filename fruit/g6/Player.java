@@ -1,4 +1,4 @@
-package fruit.g6new;
+package fruit.g6;
 
 import java.util.Arrays;
 

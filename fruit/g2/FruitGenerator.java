@@ -1,4 +1,4 @@
-package fruit.g3;
+package fruit.g2;
 
 //Fruit generator: hit and miss
 public class FruitGenerator implements fruit.sim.FruitGenerator

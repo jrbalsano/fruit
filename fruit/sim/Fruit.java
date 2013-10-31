@@ -19,7 +19,7 @@ public class Fruit
     private static boolean gui = true;
 
     // Step by step trace
-    private static boolean trace = true;
+    protected static boolean trace = true;
 
     // default parameters
     private static final String DEFAULT_PLAYERLIST = "players.list";
@@ -409,7 +409,7 @@ public class Fruit
     }
 
 	// shuffle player
-	private static void shufflePlayer(Player[] arr)
+	protected static void shufflePlayer(Player[] arr)
 	{
 		for (int i = 0 ; i != arr.length ; ++i) {
 			int j = random.nextInt(arr.length - i) + i;
@@ -487,7 +487,7 @@ public class Fruit
     }
 
 
-    private void play(boolean gui) throws Exception{
+    protected void play(boolean gui) throws Exception{
         BufferedReader buffer = null;
 
         HTTPServer server = null;
@@ -683,7 +683,7 @@ public class Fruit
     }
 
 
-    private static int[] createServingBowl(String distPath, int nfruits) throws Exception {
+    protected static int[] createServingBowl(String distPath, int nfruits) throws Exception {
         double[] dist = new double[12];
         int[] bowl = new int[12];
         
@@ -859,9 +859,9 @@ public class Fruit
     // bowl of player
     private int[][][] bowlOfPlayer;
     // expectation
-    private int[] expectation;
+    protected int[] expectation;
     // score
-    private int[] scores;
+    protected int[] scores;
 
     private String action;
 
