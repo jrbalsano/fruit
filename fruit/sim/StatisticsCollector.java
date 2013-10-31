@@ -49,9 +49,13 @@ public class StatisticsCollector {
               }
 
             }
+            
+            // Calculate average scores
             for (int p = 0; p < playerNames.length; p++) {
               configResult.playerAverageScores[p] /= REPEATS;
             }
+            
+            // Write the results
             writer.write(configResult.toString());
             writer.flush();
           }

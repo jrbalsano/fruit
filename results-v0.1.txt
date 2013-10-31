@@ -1,0 +1,555 @@
+null
+Players: players/players.list
+Distribution: dist/g1.txt
+Bowl Size: 5
+	g1: 77.498
+	g2: 77.798
+	g3: 74.63
+	g4: 75.56
+	g5: 78.808
+	g6: 77.646
+	g7: 73.71
+	g8: 72.958
+	g9: 72.642
+Players: players/players.list
+Distribution: dist/g6.txt
+Bowl Size: 5
+	g1: 76.546
+	g2: 77.228
+	g3: 74.678
+	g4: 75.662
+	g5: 78.512
+	g6: 77.22
+	g7: 74.546
+	g8: 73.14
+	g9: 72.93
+Players: players/players.list
+Distribution: dist/half_slant.txt
+Bowl Size: 5
+	g1: 76.032
+	g2: 75.396
+	g3: 71.794
+	g4: 72.688
+	g5: 76.492
+	g6: 76.358
+	g7: 73.862
+	g8: 72.004
+	g9: 72.8
+Players: players/players.list
+Distribution: dist/hitandmiss.txt
+Bowl Size: 5
+	g1: 78.248
+	g2: 76.776
+	g3: 75.078
+	g4: 77.004
+	g5: 78.4
+	g6: 78.108
+	g7: 75.228
+	g8: 71.634
+	g9: 72.19
+Players: players/players.list
+Distribution: dist/parabolic.txt
+Bowl Size: 5
+	g1: 79.776
+	g2: 78.388
+	g3: 74.562
+	g4: 75.596
+	g5: 78.186
+	g6: 78.556
+	g7: 74.046
+	g8: 71.946
+	g9: 73.676
+Distribution does not sum to 1!1.0119140625
+Players: players/players.list
+Distribution: dist/random.dist
+Bowl Size: 5
+	g1: 73.616
+	g2: 76.342
+	g3: 71.77
+	g4: 75.35
+	g5: 76.662
+	g6: 76.684
+	g7: 72.688
+	g8: 72.652
+	g9: 73.228
+Players: players/players.list
+Distribution: dist/RandomizedDistribution1.txt
+Bowl Size: 5
+	g1: 78.34
+	g2: 78.774
+	g3: 73.904
+	g4: 76.93
+	g5: 78.51
+	g6: 77.838
+	g7: 75.098
+	g8: 73.694
+	g9: 73.294
+Players: players/players.list
+Distribution: dist/RandomizedDistribution2.txt
+Bowl Size: 5
+	g1: 78.546
+	g2: 78.154
+	g3: 72.874
+	g4: 77.038
+	g5: 78.698
+	g6: 78.304
+	g7: 74.974
+	g8: 71.832
+	g9: 72.534
+Distribution does not sum to 1!1.0000000000000002
+Players: players/players.list
+Distribution: dist/uniform_partial.txt
+Bowl Size: 5
+	g1: 77.67
+	g2: 77.782
+	g3: 74.948
+	g4: 78.056
+	g5: 78.346
+	g6: 78.004
+	g7: 75.168
+	g8: 73.418
+	g9: 72.114
+null
+Players: players/players.list
+Distribution: dist/g1.txt
+Bowl Size: 10
+	g1: 147.24
+	g2: 149.808
+	g3: 144.73
+	g4: 143.83
+	g5: 146.962
+	g6: 147.168
+	g7: 141.984
+	g8: 141.932
+	g9: 142.838
+Players: players/players.list
+Distribution: dist/g6.txt
+Bowl Size: 10
+	g1: 146.38
+	g2: 150.2
+	g3: 142.312
+	g4: 143.66
+	g5: 146.882
+	g6: 147.892
+	g7: 141.566
+	g8: 143.844
+	g9: 141.366
+Players: players/players.list
+Distribution: dist/half_slant.txt
+Bowl Size: 10
+	g1: 143.92
+	g2: 149.088
+	g3: 142.056
+	g4: 144.116
+	g5: 148.016
+	g6: 144.26
+	g7: 139.694
+	g8: 139.946
+	g9: 139.582
+Players: players/players.list
+Distribution: dist/hitandmiss.txt
+Bowl Size: 10
+	g1: 146.732
+	g2: 149.738
+	g3: 142.734
+	g4: 143.412
+	g5: 147.194
+	g6: 148.35
+	g7: 141.146
+	g8: 142.11
+	g9: 141.836
+Players: players/players.list
+Distribution: dist/parabolic.txt
+Bowl Size: 10
+	g1: 149.506
+	g2: 149.998
+	g3: 143.264
+	g4: 143.756
+	g5: 148.032
+	g6: 148.024
+	g7: 143.622
+	g8: 142.448
+	g9: 140.134
+Distribution does not sum to 1!1.0119140625
+Players: players/players.list
+Distribution: dist/random.dist
+Bowl Size: 10
+	g1: 145.622
+	g2: 150.336
+	g3: 141.788
+	g4: 143.85
+	g5: 142.93
+	g6: 144.358
+	g7: 138.886
+	g8: 141.246
+	g9: 142.854
+Players: players/players.list
+Distribution: dist/RandomizedDistribution1.txt
+Bowl Size: 10
+	g1: 148.792
+	g2: 149.808
+	g3: 143.718
+	g4: 144.046
+	g5: 149.766
+	g6: 146.82
+	g7: 141.466
+	g8: 140.212
+	g9: 140.62
+Players: players/players.list
+Distribution: dist/RandomizedDistribution2.txt
+Bowl Size: 10
+	g1: 148.686
+	g2: 151.914
+	g3: 143.366
+	g4: 144.11
+	g5: 146.754
+	g6: 146.984
+	g7: 143.796
+	g8: 142.376
+	g9: 142.65
+Distribution does not sum to 1!1.0000000000000002
+Players: players/players.list
+Distribution: dist/uniform_partial.txt
+Bowl Size: 10
+	g1: 147.622
+	g2: 149.334
+	g3: 142.26
+	g4: 144.63
+	g5: 149.39
+	g6: 147.292
+	g7: 142.972
+	g8: 142.556
+	g9: 141.994
+null
+Players: players/players.list
+Distribution: dist/g1.txt
+Bowl Size: 25
+	g1: 347.462
+	g2: 353.184
+	g3: 345.368
+	g4: 342.694
+	g5: 352.8
+	g6: 329.19
+	g7: 344.896
+	g8: 337.676
+	g9: 344.552
+Players: players/players.list
+Distribution: dist/g6.txt
+Bowl Size: 25
+	g1: 348.316
+	g2: 356.466
+	g3: 344.876
+	g4: 342.896
+	g5: 354.798
+	g6: 330.844
+	g7: 342.208
+	g8: 339.96
+	g9: 344.432
+Players: players/players.list
+Distribution: dist/half_slant.txt
+Bowl Size: 25
+	g1: 341.748
+	g2: 357.78
+	g3: 338.032
+	g4: 341.868
+	g5: 342.536
+	g6: 328.244
+	g7: 334.52
+	g8: 339.526
+	g9: 337.676
+Players: players/players.list
+Distribution: dist/hitandmiss.txt
+Bowl Size: 25
+	g1: 347.844
+	g2: 352.258
+	g3: 346.512
+	g4: 340.728
+	g5: 353.81
+	g6: 330.564
+	g7: 341.278
+	g8: 344.612
+	g9: 342.408
+Players: players/players.list
+Distribution: dist/parabolic.txt
+Bowl Size: 25
+	g1: 352.716
+	g2: 360.812
+	g3: 347.238
+	g4: 344.538
+	g5: 352.22
+	g6: 331.806
+	g7: 339.246
+	g8: 343.428
+	g9: 346.222
+Distribution does not sum to 1!1.0119140625
+Players: players/players.list
+Distribution: dist/random.dist
+Bowl Size: 25
+	g1: 337.6
+	g2: 351.978
+	g3: 349.89
+	g4: 340.814
+	g5: 345.262
+	g6: 335.516
+	g7: 338.262
+	g8: 339.124
+	g9: 340.99
+Players: players/players.list
+Distribution: dist/RandomizedDistribution1.txt
+Bowl Size: 25
+	g1: 352.69
+	g2: 355.634
+	g3: 350.764
+	g4: 343.898
+	g5: 351.874
+	g6: 329.118
+	g7: 341.964
+	g8: 344.806
+	g9: 347.664
+Players: players/players.list
+Distribution: dist/RandomizedDistribution2.txt
+Bowl Size: 25
+	g1: 353.888
+	g2: 354.542
+	g3: 344.378
+	g4: 343.348
+	g5: 349.22
+	g6: 326.392
+	g7: 341.736
+	g8: 343.434
+	g9: 345.698
+Distribution does not sum to 1!1.0000000000000002
+Players: players/players.list
+Distribution: dist/uniform_partial.txt
+Bowl Size: 25
+	g1: 351.756
+	g2: 353.612
+	g3: 346.778
+	g4: 342.774
+	g5: 354.756
+	g6: 328.498
+	g7: 344.96
+	g8: 344.49
+	g9: 341.818
+null
+Players: players/players.list
+Distribution: dist/g1.txt
+Bowl Size: 50
+	g1: 681.43
+	g2: 696.198
+	g3: 680.408
+	g4: 678.698
+	g5: 687.12
+	g6: 651.49
+	g7: 657.438
+	g8: 682.432
+	g9: 677.852
+Players: players/players.list
+Distribution: dist/g6.txt
+Bowl Size: 50
+	g1: 680.934
+	g2: 691.264
+	g3: 678.17
+	g4: 666.712
+	g5: 684.152
+	g6: 658.266
+	g7: 662.842
+	g8: 665.822
+	g9: 672.186
+Players: players/players.list
+Distribution: dist/half_slant.txt
+Bowl Size: 50
+	g1: 682.378
+	g2: 687.654
+	g3: 676.596
+	g4: 677.718
+	g5: 674.566
+	g6: 641.666
+	g7: 655.028
+	g8: 659.406
+	g9: 686.564
+Players: players/players.list
+Distribution: dist/hitandmiss.txt
+Bowl Size: 50
+	g1: 682.578
+	g2: 692.774
+	g3: 680.592
+	g4: 669.406
+	g5: 681.916
+	g6: 650.368
+	g7: 670.99
+	g8: 680.114
+	g9: 678.228
+Players: players/players.list
+Distribution: dist/parabolic.txt
+Bowl Size: 50
+	g1: 681.896
+	g2: 693.04
+	g3: 677.83
+	g4: 668.888
+	g5: 682.518
+	g6: 652.33
+	g7: 672.172
+	g8: 677.43
+	g9: 679.124
+Distribution does not sum to 1!1.0119140625
+Players: players/players.list
+Distribution: dist/random.dist
+Bowl Size: 50
+	g1: 672.478
+	g2: 676.618
+	g3: 672.156
+	g4: 673.224
+	g5: 671.022
+	g6: 648.842
+	g7: 653.178
+	g8: 673.334
+	g9: 670.922
+Players: players/players.list
+Distribution: dist/RandomizedDistribution1.txt
+Bowl Size: 50
+	g1: 684.376
+	g2: 692.536
+	g3: 683.418
+	g4: 672.68
+	g5: 688.79
+	g6: 649.616
+	g7: 664.548
+	g8: 678.432
+	g9: 675.474
+Players: players/players.list
+Distribution: dist/RandomizedDistribution2.txt
+Bowl Size: 50
+	g1: 679.906
+	g2: 691.764
+	g3: 686.49
+	g4: 675.938
+	g5: 684.436
+	g6: 648.29
+	g7: 663.014
+	g8: 681.214
+	g9: 678.09
+Distribution does not sum to 1!1.0000000000000002
+Players: players/players.list
+Distribution: dist/uniform_partial.txt
+Bowl Size: 50
+	g1: 682.35
+	g2: 704.922
+	g3: 688.414
+	g4: 668.482
+	g5: 686.042
+	g6: 654.57
+	g7: 671.546
+	g8: 680.662
+	g9: 675.612
+null
+Players: players/players.list
+Distribution: dist/g1.txt
+Bowl Size: 100
+	g1: 1345.902
+	g2: 1348.416
+	g3: 1340.444
+	g4: 1331.052
+	g5: 1346.07
+	g6: 1307.098
+	g7: 1308.282
+	g8: 1335.762
+	g9: 1344.646
+Players: players/players.list
+Distribution: dist/g6.txt
+Bowl Size: 100
+	g1: 1335.776
+	g2: 1372.118
+	g3: 1341.092
+	g4: 1318.186
+	g5: 1352.964
+	g6: 1288.6
+	g7: 1317.204
+	g8: 1343.336
+	g9: 1345.36
+Players: players/players.list
+Distribution: dist/half_slant.txt
+Bowl Size: 100
+	g1: 1333.32
+	g2: 1383.246
+	g3: 1358.928
+	g4: 1301.42
+	g5: 1353.206
+	g6: 1303.168
+	g7: 1288.806
+	g8: 1327.338
+	g9: 1337.21
+Players: players/players.list
+Distribution: dist/hitandmiss.txt
+Bowl Size: 100
+	g1: 1344.126
+	g2: 1352.938
+	g3: 1353.01
+	g4: 1325.482
+	g5: 1366.736
+	g6: 1302.078
+	g7: 1333.252
+	g8: 1344.802
+	g9: 1336.496
+Players: players/players.list
+Distribution: dist/parabolic.txt
+Bowl Size: 100
+	g1: 1348.126
+	g2: 1364.99
+	g3: 1358.198
+	g4: 1325.892
+	g5: 1355.33
+	g6: 1298.574
+	g7: 1320.734
+	g8: 1342.924
+	g9: 1341.144
+Distribution does not sum to 1!1.0119140625
+Players: players/players.list
+Distribution: dist/random.dist
+Bowl Size: 100
+	g1: 1339.22
+	g2: 1375.978
+	g3: 1333.014
+	g4: 1306.816
+	g5: 1306.482
+	g6: 1291.86
+	g7: 1332.348
+	g8: 1319.424
+	g9: 1338.936
+Players: players/players.list
+Distribution: dist/RandomizedDistribution1.txt
+Bowl Size: 100
+	g1: 1351.866
+	g2: 1361.324
+	g3: 1342.054
+	g4: 1336.662
+	g5: 1359.924
+	g6: 1296.572
+	g7: 1318.26
+	g8: 1341.938
+	g9: 1335.98
+Players: players/players.list
+Distribution: dist/RandomizedDistribution2.txt
+Bowl Size: 100
+	g1: 1355.086
+	g2: 1371.544
+	g3: 1335.048
+	g4: 1332.514
+	g5: 1356.048
+	g6: 1292.36
+	g7: 1329.814
+	g8: 1339.574
+	g9: 1342.44
+Distribution does not sum to 1!1.0000000000000002
+Players: players/players.list
+Distribution: dist/uniform_partial.txt
+Bowl Size: 100
+	g1: 1354.594
+	g2: 1365.432
+	g3: 1340.084
+	g4: 1333.814
+	g5: 1358.486
+	g6: 1300.396
+	g7: 1324.21
+	g8: 1345.688
+	g9: 1347.382
